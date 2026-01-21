@@ -2,13 +2,15 @@ const N_KEYS: usize = 16;
 
 /* Tastierino con 16 tasti che possono essere premuti e rilasciati */
 pub struct Keypad {
-    pub keys: [bool, N_KEYS],
+    pub keys: [bool; N_KEYS],
 }
 
 impl Keypad {
     /* Inizializza tutti i tasti come rilasciati */
-    pub fn new() -> self {
-        keys: [false, N_KEYS],
+    pub fn new() -> Self {
+        Keypad {
+            keys: [false; N_KEYS],
+        }
     }
 
     /* Preme o rilascia un tasto */

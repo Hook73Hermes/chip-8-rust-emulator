@@ -2,14 +2,14 @@ const RAM_SIZE: usize = 4096;
 
 /* Ram con 4KB di memoria */
 pub struct Ram {
-    pub mem: [u8, RAM_SIZE],
+    pub mem: [u8; RAM_SIZE],
 }
 
 impl Ram {
     /* Inizializza tutta la ram a 0 */
-    pub fn new() -> self {
+    pub fn new() -> Self {
         Ram {
-            mem: [0, RAM_SIZE],
+            mem: [0; RAM_SIZE],
         }
     }
 

@@ -12,7 +12,7 @@ pub struct Bus {
 }
 
 impl Bus {
-    /* Inizializzazione dell'hardware */
+    /* Inizializza dell'hardware */
     pub fn new() -> Self {
         Bus {
             ram: Ram::new(),
@@ -20,5 +20,10 @@ impl Bus {
             display: Display::new(),
             keypad: Keypad::new(),
         }
+    }
+
+    /* Carcica la rom in ram */
+    pub fn load_rom(&mut self, rom: &[u8]) {
+        self.ram.write_rom(rom);
     }
 }

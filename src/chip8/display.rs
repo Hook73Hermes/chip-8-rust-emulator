@@ -1,5 +1,5 @@
-const SCREEN_WIDTH: usize = 64;
-const SCREEN_HEIGHT: usize = 32;
+pub const SCREEN_WIDTH: usize = 64;
+pub const SCREEN_HEIGHT: usize = 32;
 const N_PIXELS: usize = SCREEN_WIDTH * SCREEN_HEIGHT;
 
 /* Display 64x32 con pixel bianchi (true) o neri (false) */

@@ -18,5 +18,5 @@ impl Display {
     /* Spegne tutti i pixel dello schermo */
     pub fn clear(&mut self) {
         self.buffer = [false; N_PIXELS];
-    } 
+    }
 }

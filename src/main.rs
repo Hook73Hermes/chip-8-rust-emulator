@@ -1,12 +1,13 @@
 mod chip8;
 
 use chip8::bus::Bus;
-use chip8::display::{SCREEN_WIDTH, SCREEN_HEIGHT};
-use minifb::{Window, WindowOptions, Scale, Key};
+use chip8::display::{SCREEN_HEIGHT, SCREEN_WIDTH};
+use minifb::{Key, Scale, Window, WindowOptions};
 use std::fs::File;
 use std::io::Read;
 
 const CPU_TICKS_PER_FRAME: usize = 10;
+const ROM: &str = "roms/space-invaders.ch8";
 
 fn main() {
     /* Setup della finestra di emulazione */
@@ -18,7 +19,8 @@ fn main() {
             scale: Scale::X16,
             ..WindowOptions::default()
         },
-    ).unwrap_or_else(|e| {
+    )
+    .unwrap_or_else(|e| {
         panic!("{}", e);
     });
 
@@ -29,7 +31,7 @@ fn main() {
     let mut bus = Bus::new();
 
     /* Carica la rom in ram */
-    let rom_data = read_file("roms/IBM-logo.ch8");
+    let rom_data = read_file(ROM);
     bus.load_rom(&rom_data);
 
     /* Ciclo del gioco */
@@ -51,7 +53,9 @@ fn main() {
 
         /* Aggiornamento dello schermo */
         let buffer = buffer_to_u32(&bus.display.buffer, SCREEN_WIDTH, SCREEN_HEIGHT);
-        window.update_with_buffer(&buffer, SCREEN_WIDTH, SCREEN_HEIGHT).unwrap();
+        window
+            .update_with_buffer(&buffer, SCREEN_WIDTH, SCREEN_HEIGHT)
+            .unwrap();
     }
 }
 
@@ -73,7 +77,7 @@ fn read_file(path: &str) -> Vec<u8> {
 /* Trasforma il buffer di bool in buffer di RGB */
 fn buffer_to_u32(buffer: &[bool], width: usize, height: usize) -> Vec<u32> {
     let mut result = vec![0; width * height];
-    
+
     for (i, pixel) in buffer.iter().enumerate() {
         if *pixel {
             result[i] = 0xFFFFFFFF;
@@ -87,10 +91,22 @@ fn buffer_to_u32(buffer: &[bool], width: usize, height: usize) -> Vec<u32> {
 /* Processa un input dal tastierino numerico */
 fn process_input(window: &Window, bus: &mut Bus) {
     let key_map = [
-        (Key::X, 0x0), (Key::Key1, 0x1), (Key::Key2, 0x2), (Key::Key3, 0x3),
-        (Key::Q, 0x4), (Key::W, 0x5),    (Key::E, 0x6),    (Key::A, 0x7),
-        (Key::S, 0x8), (Key::D, 0x9),    (Key::Z, 0xA),    (Key::C, 0xB),
-        (Key::Key4, 0xC), (Key::R, 0xD), (Key::F, 0xE),    (Key::V, 0xF),
+        (Key::X, 0x0),
+        (Key::Key1, 0x1),
+        (Key::Key2, 0x2),
+        (Key::Key3, 0x3),
+        (Key::Q, 0x4),
+        (Key::W, 0x5),
+        (Key::E, 0x6),
+        (Key::A, 0x7),
+        (Key::S, 0x8),
+        (Key::D, 0x9),
+        (Key::Z, 0xA),
+        (Key::C, 0xB),
+        (Key::Key4, 0xC),
+        (Key::R, 0xD),
+        (Key::F, 0xE),
+        (Key::V, 0xF),
     ];
 
     for i in 0..16 {

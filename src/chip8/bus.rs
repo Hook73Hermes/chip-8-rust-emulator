@@ -1,7 +1,7 @@
-use super::ram::Ram;
 use super::cpu::Cpu;
 use super::display::Display;
 use super::keypad::Keypad;
+use super::ram::Ram;
 
 // I byte che rappresentano i caratteri da 0 a F
 const FONTSET: [u8; 80] = [
@@ -20,7 +20,7 @@ const FONTSET: [u8; 80] = [
     0xF0, 0x80, 0x80, 0x80, 0xF0, // C
     0xE0, 0x90, 0x90, 0x90, 0xE0, // D
     0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
-    0xF0, 0x80, 0xF0, 0x80, 0x80  // F
+    0xF0, 0x80, 0xF0, 0x80, 0x80, // F
 ];
 
 /* Bus che interconnette tutto l'hardware */
@@ -55,6 +55,7 @@ impl Bus {
 
     /* Esegue un passo della cpu */
     pub fn tick_cpu(&mut self) {
-        self.cpu.tick(&mut self.ram, &mut self.display, &mut self.keypad);
+        self.cpu
+            .tick(&mut self.ram, &mut self.display, &mut self.keypad);
     }
 }

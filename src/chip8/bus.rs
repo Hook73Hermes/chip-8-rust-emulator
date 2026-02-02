@@ -3,7 +3,7 @@ use super::display::Display;
 use super::keypad::Keypad;
 use super::ram::Ram;
 
-// I byte che rappresentano i caratteri da 0 a F
+// Byte che rappresentano i caratteri da 0 a F
 const FONTSET: [u8; 80] = [
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
     0x20, 0x60, 0x20, 0x20, 0x70, // 1
@@ -23,7 +23,8 @@ const FONTSET: [u8; 80] = [
     0xF0, 0x80, 0xF0, 0x80, 0x80, // F
 ];
 
-/* Bus che interconnette tutto l'hardware */
+// Bus che interconnette tutto l'hardware
+// Nella logica di Rust il bus possiede gli altri componenti
 pub struct Bus {
     pub ram: Ram,
     pub cpu: Cpu,
@@ -32,7 +33,7 @@ pub struct Bus {
 }
 
 impl Bus {
-    /* Inizializza l'hardware e carica il fontset */
+    // Inizializza l'hardware e carica il fontset
     pub fn new() -> Self {
         let mut bus = Bus {
             ram: Ram::new(),
@@ -48,12 +49,12 @@ impl Bus {
         bus
     }
 
-    /* Carica la rom in ram */
+    // Carica la rom in ram
     pub fn load_rom(&mut self, rom: &[u8]) {
         self.ram.write_rom(rom);
     }
 
-    /* Esegue un passo della cpu */
+    // Esegue un passo della cpu
     pub fn tick_cpu(&mut self) {
         self.cpu
             .tick(&mut self.ram, &mut self.display, &mut self.keypad);

@@ -10,7 +10,7 @@ const CPU_TICKS_PER_FRAME: usize = 10;
 const ROM: &str = "roms/space-invaders.ch8";
 
 fn main() {
-    /* Setup della finestra di emulazione */
+    // Setup della finestra di emulazione
     let mut window = Window::new(
         "Rust CHIP-8 Emulator",
         SCREEN_WIDTH,
@@ -24,26 +24,29 @@ fn main() {
         panic!("{}", e);
     });
 
-    // Limita la finestra a 60 FPS
+    // Limita la finestra a 60 FPS, come il CHIP-8 originale
     window.set_target_fps(60);
 
-    /* Bus che interconnette tutto l'hardware */
+    // Bus che interconnette tutto l'hardware
     let mut bus = Bus::new();
 
-    /* Carica la rom in ram */
+    // Carica la rom in ram
     let rom_data = read_file(ROM);
     bus.load_rom(&rom_data);
 
-    /* Ciclo del gioco */
+    // Ciclo infinito che simula il computer, il CHIP-8 si poteva spegnere solo via hardware
     while window.is_open() && !window.is_key_down(minifb::Key::Escape) {
         process_input(&window, &mut bus);
 
-        /* Esecuzione di vari cicli di CPU  */
+        // Esecuzione di vari cicli di CPU
+        // Il CHIP-8 eseguiva 600 cicli al secondo
+        // Essendo l'aggiornamento della finestra limitato a 60fps, esegue 10 cicli di clock per ogni aggiornemnto della finestra
         for _ in 0..CPU_TICKS_PER_FRAME {
             bus.tick_cpu();
         }
 
         // Aggiorna Timer a 60 Hz
+        // I due timer sono attivi solo se sono diversi da zero
         if bus.cpu.delay_timer > 0 {
             bus.cpu.delay_timer -= 1;
         }
@@ -51,7 +54,7 @@ fn main() {
             bus.cpu.sound_timer -= 1;
         }
 
-        /* Aggiornamento dello schermo */
+        // Aggiornamento dello schermo
         let buffer = buffer_to_u32(&bus.display.buffer, SCREEN_WIDTH, SCREEN_HEIGHT);
         window
             .update_with_buffer(&buffer, SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -59,7 +62,7 @@ fn main() {
     }
 }
 
-/* Legge un file restituendolo come array di caratteri */
+// Legge un file restituendolo come array di caratteri
 fn read_file(path: &str) -> Vec<u8> {
     let mut file = match File::open(path) {
         Ok(f) => f,
@@ -74,7 +77,7 @@ fn read_file(path: &str) -> Vec<u8> {
     }
 }
 
-/* Trasforma il buffer di bool in buffer di RGB */
+// Trasforma il buffer di bool in buffer di RGB
 fn buffer_to_u32(buffer: &[bool], width: usize, height: usize) -> Vec<u32> {
     let mut result = vec![0; width * height];
 
@@ -85,6 +88,7 @@ fn buffer_to_u32(buffer: &[bool], width: usize, height: usize) -> Vec<u32> {
             result[i] = 0xFF000000;
         }
     }
+
     result
 }
 
@@ -109,10 +113,12 @@ fn process_input(window: &Window, bus: &mut Bus) {
         (Key::V, 0xF),
     ];
 
+    // Setta tutti i tasti come non premuti
     for i in 0..16 {
         bus.keypad.set_pressed(i, false);
     }
 
+    // Setta solo i tasti effettivamente premuti
     for (key_code, chip8_key) in key_map {
         if window.is_key_down(key_code) {
             bus.keypad.set_pressed(chip8_key, true);
